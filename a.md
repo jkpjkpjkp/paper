@@ -56,6 +56,8 @@ GLM-4v-plus (the vlm we use in our pipeline): TODO: 10 tasks 0%, need to look in
 
 in each round, we run the 3 strongest graph, run each 5 tasks from select_task (see below) (3x5 runs), then pick the strongest overall graph to optimize. this is different from Aflow (see related works)(TODO: Ablation needed)
 
+in accordance to Aflow, we keep a record of what modifications have already been explored for the current graph, so as to avoid duplicated efforts treading down the same path of optimization. 
+
 ## Design Details
 
 ### less experimenting
