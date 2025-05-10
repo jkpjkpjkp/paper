@@ -1,0 +1,5 @@
+A series of work including Eyes-Wide-Shut highlights large motimodal model(lmm)s' limited accuracy in visual perception. While they are the SOTA way of visual question answering (VQA), their design and training process limits their visual perception to within a ~200 token per image span, which cannot capture fine details or all relationships in complex images. A demonstration of which is that today's SOTA LMMs still cannot count accurately even a dozen objects. 
+
+To emulate a human VQA process, where human may continually focus on related areas, taking longer gaze at related areas for more accurate perception, we hypothesize that a inference-time LMM workflow can have a similar effect and lead to better visual perceptive performance. 
+
+This work uses LMM to automatically optimize LMM workflows that answer vqa questions. Experiments on the challenging Zerobench-subtasks dataset showed improved results. 
