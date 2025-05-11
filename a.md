@@ -1,6 +1,13 @@
+# Abstract
+
+
+Code is available at https://github.com/jkpjkpjkp/bob and https://github.com/jkpjkpjkp/e
+
 # 引言
 
 Former research highlights the inaccuracies in visual-grounding (vision-perception) in large multimodal models (LMMs) [BLINK, Eyes-wide-shut, Cambrian]. While LMMs are the SOTA way of visual question answering (VQA), due to this visual perception bottleneck, even today's SOTA LMMs cannot accurately count past a dozen objects. In this paper we use Large Language Model (LLM) and Large Multimodal Model (LMM) interchangably, since most frontier LLMs now supports vision. 
+
+LMM's pretraining in internet-scale image-text pairs gives it strong language and visual understanding, yet limits its visual perception to that of the caption. 
 
 Our first motivation is to emulate a human VQA process, where human may continually focus on related areas, taking longer gaze at related areas for more accurate perception, we hypothesize that a inference-time LMM workflow can have a similar effect and lead to better visual perceptive performance. 
 
@@ -14,15 +21,23 @@ Our work first tries to improve LMM's visual perception using a hand-crafted age
 
 ## Grounding
 
+Grounding dino uses early fusion of image and text features, before decoding into bounding boxes. This can contaminate image features and lead to hallucinations of nonexistent objects appearing in text but not in image. 
 
+![dino top](./images/g_dino/top.png)
+![dino top](./images/g_dino/fusion.png)
+![dino top](./images/g_dino/bottom.png)
 
 Owl v2 have no inference-time text-image fusion, so it will not hallucinate nonexistent objects as grounding dino will, but also lacks the focus of grounding dino on objects of interest; it also do not use additional layers to adjust bounding box coordinates, leading to less accurate bounding boxes. 
 ![owl architecture](./images/owl_v2.png)
 
-## Vision-Language Models
+We use the 2 models out-of-the box but fuse their results (see appendix), to combine their strenghths into an accurate, hallucination-free object detector. 
+
+## Vision Foundation Models
 Vision-only models (SAM, Depth-anything; image-to-3d, 3d-pointcloud methods; computational photography), vision-focused models such as detection (GroundingDINO, OwlV2, Florence-2) and language-focused models (LMMs). To bridge this vision-language (say-what-you-see) gap, works such as semantic segmentation (Seg-Zero 2503.06520) and counting (CountGD) succeeds on specific vision-centric tasks. 
 Early efforts of fusing these models include Set-of-Mask prompting, eliciting abilities in SAM to help VLM. 
 
+## Building on Vision Foundation Models
+[CountGD] cleverly use light-weigt training to strengthen grounding dino's detection by fusing  reference-images into its input, along with text. the reference image is usually crops from the original image, examplifying an object of interest. Interestingly this posttraining also improves pure-text detection. However, due to its reliance on vision-centric model (grounding_dino), it cannot process rich semantics in text (e.g. How many pandas is standing on wood logs?), for which we need to rely on LMM. 
 
 ## Improving LMM's visual perception
 [V*: Guided Visual Search] use reference objects (choose reference based on common-sense, e.g. cups are usually near a table) to guide a detection model to zoom in to find object of interest. 
@@ -57,7 +72,7 @@ When using a LMM (qwen-vl-max-latest on May 11 2025), on every 7th task the impr
 ## 实验
 
 ### Dataset:
-MuirBench focuses on robust multi-image understanding capabilities of multimodal LLMs. Its `Counting` subtask requires semantic counting beyond the capabilities of grounding models (e.g. How many pandas is standing on wood logs?) 
+MuirBench focuses on robust multi-image understanding capabilities of multimodal LLMs. Its `Counting` subtask requires semantic counting beyond the capabilities of grounding models 
 
 ### Baseline:
 GPT-4o: 49.15%
@@ -98,12 +113,18 @@ We use different model for workflow execution and optimization.
 
 ## 消融
 
+### Evaluations of Design Decisions in [Funsearch], [ADAS], and [Aflow]
+
 
 # 结论
-我们确定了AFlow用于VQA也可以生成优于baseline的方法。gs
+1. we discovered an agent that uses vision tools for perception, beating previous sota on the counting subtask of muirbench. 
+2. 我们确定了AFlow用于LMM可以生成优于baseline的方法。
 
 
+## Limitations and Future Work
+How llm can use tools creatively out-of-distribution remains open. our workflows, both hand-designed and auto-optimized, as well as all prior work, only showcase llm using tools in predefined/prompted/demo-ed ways, using them straightforwardly. 
 
+What is the optimal way of LLM workflow self-optimization remains open. [Funsearch], [ADAS], [Aflow] and our method are still largely empirical, lacking detailed ablation due to budget and time constraints. 
 
 
 
