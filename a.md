@@ -62,6 +62,9 @@ We would like to point out that, despite its claim, [Aflow] do not use Monte-Car
 ## 启发
 通过使用没有视觉的LLM，forcing it to split visual perception into multiple smaller steps, to bypass the limitation of visual hallucination. 
 
+a key insight into agent building [https://www.anthropic.com/engineering/building-effective-agents] is that interfacing for LLM is the same as interfacing for a human. that is, agent design is frontend design. In our case this is more than true. When LLM decides it likes to write code in a certain format or likes a certain interface, we refactor other parts of codebase to suit it. The goal is to make the interface to LLM clean, crisp, and respecting all LLM's priors. 
+
+It is beneficial to think of prompting as Frontend Design. [https://www.youtube.com/watch?v=oFfVt3S51T4] [https://arvid.xyz/posts/prompt-design/]
 
 
 ## 算法
